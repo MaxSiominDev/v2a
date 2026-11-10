@@ -1,7 +1,7 @@
 
 # v2a
 
-A small command-line tool for macOS that extracts audio from MOV videos, compresses MP3 files, and shows media information.
+A small command-line tool for macOS that extracts audio from MOV/MP4 videos, compresses MP3 files, and shows media information.
 
 ## Installation
 
@@ -19,11 +19,11 @@ Homebrew also installs FFmpeg. v2a uses `ffmpeg` and `ffprobe` as external tools
 
 ```bash
 v2a extract movie.mov
-v2a extract movie.mov --bitrate 192k
+v2a extract clip.mp4 --bitrate 192k
 v2a extract movie.mov -o ~/Music/movie.mp3
 ```
 
-The input must be a `.mov` file with exactly one audio stream. By default, v2a uses a high-quality variable bitrate (VBR) preset. Use `--bitrate` for constant bitrate (CBR) encoding.
+The input must be a `.mov` or `.mp4` file with exactly one audio stream. By default, v2a uses a high-quality variable bitrate (VBR) preset. Use `--bitrate` for constant bitrate (CBR) encoding.
 
 Metadata and cover art are preserved where MP3 supports them. Audio with more than two channels or a sample rate above 48 kHz is converted to stereo at 48 kHz.
 

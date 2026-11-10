@@ -8,7 +8,7 @@ import (
 	"github.com/MaxSiominDev/v2a/internal/media"
 )
 
-var extractInputExtensions = []string{".mov"}
+var extractInputExtensions = []string{".mov", ".mp4"}
 
 type ExtractRequest struct {
 	Input   string

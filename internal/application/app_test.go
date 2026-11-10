@@ -225,3 +225,18 @@ func TestExtractUnsupportedExtension(t *testing.T) {
 		t.Fatalf("Extract error = %v, want unsupported format", err)
 	}
 }
+
+func TestExtractAcceptsMp4(t *testing.T) {
+	dir := t.TempDir()
+	input := touchInput(t, dir, "clip.mp4", 100)
+
+	app := newTestApp(t, &fakeRunner{probeStdout: extractProbeJSON})
+
+	res, err := app.Extract(context.Background(), ExtractRequest{Input: input})
+	if err != nil {
+		t.Fatalf("Extract(.mp4) unexpected error: %v", err)
+	}
+	if res.OutputPath != filepath.Join(dir, "clip.mp3") {
+		t.Errorf("OutputPath = %q, want clip.mp3", res.OutputPath)
+	}
+}
