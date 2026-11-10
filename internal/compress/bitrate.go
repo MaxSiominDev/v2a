@@ -45,7 +45,7 @@ func ParseBitrate(s string) (int, error) {
 // rate, descending. MP3 frames come in fixed sizes, so CBR output only ever
 // lands on these steps.
 func BitrateLadder(sampleRate int) []int {
-	mpeg1 := []int{320, 256, 224, 192, 160, 144, 128, 112, 96, 80, 64, 56, 48, 40, 32}
+	mpeg1 := []int{320, 256, 224, 192, 160, 128, 112, 96, 80, 64, 56, 48, 40, 32}
 	mpeg2 := []int{160, 144, 128, 112, 96, 80, 64, 56, 48, 40, 32, 24, 16, 8}
 
 	if sampleRate > 0 && sampleRate < 32000 {

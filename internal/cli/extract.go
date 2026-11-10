@@ -15,7 +15,7 @@ func newExtractCmd() *cobra.Command {
 
 	cmd := &cobra.Command{
 		Use:   "extract <input>",
-		Short: "Extract the audio of a MOV file to MP3",
+		Short: "Extract the audio of a MOV or MP4 file to MP3",
 		Args:  cobra.ExactArgs(1),
 		Example: `  v2a extract movie.mov
   v2a extract movie.mov --bitrate 192k

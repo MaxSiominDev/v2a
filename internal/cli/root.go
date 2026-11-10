@@ -18,7 +18,7 @@ func NewRootCmd() *cobra.Command {
 	root := &cobra.Command{
 		Use:           "v2a",
 		Short:         "Extract and compress audio from media files",
-		Long:          "v2a converts MOV audio to MP3, compresses existing MP3s and inspects media files.\nIt requires ffmpeg and ffprobe to be installed.",
+		Long:          "v2a converts MOV/MP4 audio to MP3, compresses existing MP3s and inspects media files.\nIt requires ffmpeg and ffprobe to be installed.",
 		SilenceUsage:  true,
 		SilenceErrors: true,
 		Version:       buildinfo.Version,
