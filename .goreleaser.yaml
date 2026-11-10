@@ -1,0 +1,18 @@
+version: 2
+
+project_name: v2a
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - main: ./cmd/v2a
+    binary: v2a
+    goos: [darwin]
+    goarch: [arm64]
+    ldflags:
+      - -s -w -X github.com/MaxSiominDev/v2a/internal/buildinfo.Version={{ .Version }}
+
+archives:
+  - formats: [tar.gz]
