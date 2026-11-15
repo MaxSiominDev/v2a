@@ -60,6 +60,24 @@ func generateMp3(t *testing.T, dir string) string {
 	)
 }
 
+func generateAvi(t *testing.T, dir, name, audioCodec string) string {
+	t.Helper()
+	return generate(t, dir, name,
+		"-f", "lavfi", "-i", "testsrc=duration=2:size=320x240:rate=10",
+		"-f", "lavfi", "-i", "sine=frequency=440:duration=2",
+		"-c:v", "mpeg4", "-c:a", audioCodec,
+	)
+}
+
+func generateTs(t *testing.T, dir string) string {
+	t.Helper()
+	return generate(t, dir, "show.ts",
+		"-f", "lavfi", "-i", "testsrc=duration=2:size=320x240:rate=10",
+		"-f", "lavfi", "-i", "sine=frequency=440:duration=2",
+		"-c:v", "mpeg2video", "-c:a", "mp2",
+	)
+}
+
 func TestIntegrationExtract(t *testing.T) {
 	app := requireFFmpeg(t)
 	dir := t.TempDir()
@@ -80,6 +98,41 @@ func TestIntegrationExtract(t *testing.T) {
 	}
 	if !probe.HasGlobalTitle() || probe.Metadata()["title"] != "Integration Movie" {
 		t.Errorf("title not preserved: %v", probe.Metadata())
+	}
+}
+
+func TestIntegrationExtractAviAndTs(t *testing.T) {
+	app := requireFFmpeg(t)
+	dir := t.TempDir()
+
+	inputs := []struct {
+		path string
+		want string
+	}{
+		{generateAvi(t, dir, "clip-mp3.avi", "libmp3lame"), "clip-mp3.mp3"},
+		{generateAvi(t, dir, "clip-ac3.avi", "ac3"), "clip-ac3.mp3"},
+		{generateTs(t, dir), "show.mp3"},
+	}
+
+	for _, in := range inputs {
+		t.Run(filepath.Base(in.path), func(t *testing.T) {
+			res, err := app.Extract(context.Background(), ExtractRequest{Input: in.path})
+			if err != nil {
+				t.Fatalf("Extract(%s) unexpected error: %v", filepath.Base(in.path), err)
+			}
+			if got := filepath.Base(res.OutputPath); got != in.want {
+				t.Errorf("OutputPath = %q, want %q", got, in.want)
+			}
+
+			probe, err := app.Info(context.Background(), res.OutputPath)
+			if err != nil {
+				t.Fatalf("Info on output failed: %v", err)
+			}
+			audio := probe.AudioStreams()
+			if len(audio) != 1 || audio[0].CodecName != "mp3" {
+				t.Errorf("%s output audio = %+v, want one mp3 stream", filepath.Base(in.path), audio)
+			}
+		})
 	}
 }
 
