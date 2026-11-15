@@ -240,3 +240,31 @@ func TestExtractAcceptsMp4(t *testing.T) {
 		t.Errorf("OutputPath = %q, want clip.mp3", res.OutputPath)
 	}
 }
+
+func TestExtractAcceptsAviAndTs(t *testing.T) {
+	cases := []struct {
+		name string
+		want string
+	}{
+		{"clip.avi", "clip.mp3"},
+		{"show.ts", "show.mp3"},
+	}
+
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			dir := t.TempDir()
+			input := touchInput(t, dir, tc.name, 100)
+
+			app := newTestApp(t, &fakeRunner{probeStdout: extractProbeJSON})
+
+			res, err := app.Extract(context.Background(), ExtractRequest{Input: input})
+			if err != nil {
+				t.Fatalf("Extract(%s) unexpected error: %v", tc.name, err)
+			}
+			want := filepath.Join(dir, tc.want)
+			if res.OutputPath != want {
+				t.Errorf("OutputPath = %q, want %q", res.OutputPath, want)
+			}
+		})
+	}
+}

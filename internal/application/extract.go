@@ -8,7 +8,7 @@ import (
 	"github.com/MaxSiominDev/v2a/internal/media"
 )
 
-var extractInputExtensions = []string{".mov", ".mp4"}
+var extractInputExtensions = []string{".mov", ".mp4", ".avi", ".ts"}
 
 type ExtractRequest struct {
 	Input   string
@@ -28,7 +28,7 @@ func ValidateExtract(req ExtractRequest) error {
 	return media.CheckExtension(req.Input, extractInputExtensions...)
 }
 
-// Extract converts the single audio stream of a MOV file to MP3.
+// Extract converts the single audio stream of a supported video file to MP3.
 func (a *App) Extract(ctx context.Context, req ExtractRequest) (*ExtractResult, error) {
 	if err := ValidateExtract(req); err != nil {
 		return nil, err
